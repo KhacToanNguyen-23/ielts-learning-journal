@@ -167,10 +167,10 @@ function Handle-Request($Client, $Request) {
     if ($LASTEXITCODE -eq 1) { Send-Json $Client 409 @{ error = 'The repository has other staged changes. Commit or unstage them before submitting.' }; return }
     if ($LASTEXITCODE -gt 1) { Send-Json $Client 500 @{ error = "Could not inspect the Git staging area: $($staged -join ' ')" }; return }
 
-    $relative = "logs/$($skillFiles[$skill]).md"
-    $destination = Join-Path $repo (Join-Path 'logs' "$($skillFiles[$skill]).md")
+    $relative = "logs/$($skillFiles[$skill])/$($dateValue.ToString('yyyy-MM-dd')).md"
+    $destination = Join-Path $repo (Join-Path (Join-Path 'logs' $skillFiles[$skill]) "$($dateValue.ToString('yyyy-MM-dd')).md")
     New-Item -ItemType Directory -Path (Split-Path -Parent $destination) -Force | Out-Null
-    if (-not (Test-Path -LiteralPath $destination)) { [System.IO.File]::WriteAllText($destination, "# IELTS $skill log`r`n`r`n", $Utf8NoBom) }
+    if (-not (Test-Path -LiteralPath $destination)) { [System.IO.File]::WriteAllText($destination, "# IELTS $skill — $($dateValue.ToString('yyyy-MM-dd'))`r`n`r`n", $Utf8NoBom) }
     $time = Get-Date -Format 'HH:mm'
     $lines = New-Object 'System.Collections.Generic.List[string]'
     $lines.Add("## $($dateValue.ToString('yyyy-MM-dd')) — $(Escape-Md ([string]$data.source)) — $(Escape-Md ([string]$data.lesson)) ($time)")

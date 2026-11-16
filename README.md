@@ -23,13 +23,14 @@ To run `ieltslog` from any CMD folder, add this app folder to your Windows user 
 
 ## Log files
 
-- `logs/listening.md`
-- `logs/reading.md`
-- `logs/writing.md`
-- `logs/speaking.md`
+Each skill has its own folder. Daily files use the `YYYY-MM-DD.md` format, and sessions from the same day are appended to that file:
 
-The selected skill controls which file gets the new entry. Study4 and other sources are entered manually; the form does not access Study4.
+- `logs/listening/YYYY-MM-DD.md`
+- `logs/reading/YYYY-MM-DD.md`
+- `logs/writing/YYYY-MM-DD.md`
+- `logs/speaking/YYYY-MM-DD.md`
 
+The selected skill and current date determine the file. Study4 and other sources are entered manually; the form does not access Study4.
 ## How it works
 
 - The server binds only to `127.0.0.1` on port `8765`.
