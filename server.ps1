@@ -80,6 +80,16 @@ function Read-Config {
     return [pscustomobject]@{ repoPath = '' }
 }
 
+function Invoke-Git([string]$Repository, [string[]]$Arguments) {
+    $previousPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $output = @(& git -C $Repository @Arguments 2>&1 | ForEach-Object { $_.ToString() })
+        $exitCode = $LASTEXITCODE
+        return [pscustomobject]@{ ExitCode = $exitCode; Output = $output }
+    }
+    finally { $ErrorActionPreference = $previousPreference }
+}
 function Get-RepoCandidates {
     $roots = New-Object 'System.Collections.Generic.List[string]'
     $roots.Add('D:\Project\Personal')
@@ -99,9 +109,9 @@ function Get-RepoCandidates {
             if (Test-Path -LiteralPath (Join-Path $directory.FullName '.git')) { $candidates.Add($directory.FullName) }
         }
         foreach ($candidate in $candidates) {
-            $rootOutput = & git -C $candidate rev-parse --show-toplevel 2>$null
-            if ($LASTEXITCODE -eq 0) {
-                $repoPath = [System.IO.Path]::GetFullPath(([string]$rootOutput).Trim())
+            $gitResult = Invoke-Git -Repository $candidate -Arguments @('rev-parse', '--show-toplevel')
+            if ($gitResult.ExitCode -eq 0) {
+                $repoPath = [System.IO.Path]::GetFullPath((($gitResult.Output -join [Environment]::NewLine).Trim()))
                 $found[$repoPath] = [pscustomobject]@{ name = (Split-Path -Leaf $repoPath); path = $repoPath }
             }
         }
@@ -187,8 +197,8 @@ function Handle-Request($Client, $Request) {
         $repoPath = [string]$data.repoPath
         if (-not (Test-Path -LiteralPath $repoPath -PathType Container)) { Send-Json $Client 400 @{ error = 'Repository folder not found.' }; return }
         $repoPath = (Resolve-Path -LiteralPath $repoPath).Path
-        $root = & git -C $repoPath rev-parse --show-toplevel 2>&1
-        if ($LASTEXITCODE -ne 0) { Send-Json $Client 400 @{ error = 'The selected folder is not a Git repository.' }; return }
+        $gitResult = Invoke-Git -Repository $repoPath -Arguments @('rev-parse', '--show-toplevel')
+        if ($gitResult.ExitCode -ne 0) { Send-Json $Client 400 @{ error = 'The selected folder is not a Git repository.' }; return }
         New-Item -ItemType Directory -Path $ConfigDir -Force | Out-Null
         @{ repoPath = $repoPath } | ConvertTo-Json | Set-Content -LiteralPath $ConfigPath -Encoding UTF8
         Send-Json $Client 200 @{ repoPath = $repoPath; ok = $true }; return
@@ -206,9 +216,9 @@ function Handle-Request($Client, $Request) {
     if (-not [int]::TryParse([string]$data.minutes, [ref]$minutes) -or $minutes -lt 1 -or $minutes -gt 1440) { Send-Json $Client 400 @{ error = 'Duration must be between 1 and 1440 minutes.' }; return }
     if (-not [string]$data.source -or -not [string]$data.lesson) { Send-Json $Client 400 @{ error = 'Enter a source and lesson title.' }; return }
 
-    $staged = & git -C $repo diff --cached --quiet 2>&1
-    if ($LASTEXITCODE -eq 1) { Send-Json $Client 409 @{ error = 'The repository has other staged changes. Commit or unstage them before submitting.' }; return }
-    if ($LASTEXITCODE -gt 1) { Send-Json $Client 500 @{ error = "Could not inspect the Git staging area: $($staged -join ' ')" }; return }
+    $stagedResult = Invoke-Git -Repository $repo -Arguments @('diff', '--cached', '--quiet')
+    if ($stagedResult.ExitCode -eq 1) { Send-Json $Client 409 @{ error = 'The repository has other staged changes. Commit or unstage them before submitting.' }; return }
+    if ($stagedResult.ExitCode -gt 1) { Send-Json $Client 500 @{ error = "Could not inspect the Git staging area: $($stagedResult.Output -join ' ')" }; return }
 
     $relative = "logs/$($skillFiles[$skill])/$($dateValue.ToString('yyyy-MM-dd')).md"
     $destination = Join-Path $repo (Join-Path (Join-Path 'logs' $skillFiles[$skill]) "$($dateValue.ToString('yyyy-MM-dd')).md")
@@ -225,14 +235,14 @@ function Handle-Request($Client, $Request) {
     $lines.Add('')
     [System.IO.File]::AppendAllText($destination, (($lines -join "`r`n") + "`r`n"), $Utf8NoBom)
 
-    $addOutput = & git -C $repo add -- $relative 2>&1
-    if ($LASTEXITCODE -ne 0) { Send-Json $Client 500 @{ error = "The log was saved locally, but git add failed: $($addOutput -join ' ')" }; return }
+    $addResult = Invoke-Git -Repository $repo -Arguments @('add', '--', $relative)
+    if ($addResult.ExitCode -ne 0) { Send-Json $Client 500 @{ error = "The log was saved locally, but git add failed: $($addResult.Output -join ' ')" }; return }
     $commitMessage = "Log IELTS $skill - $($dateValue.ToString('yyyy-MM-dd'))"
-    $commitOutput = & git -C $repo commit -m $commitMessage 2>&1
-    if ($LASTEXITCODE -ne 0) { Send-Json $Client 500 @{ error = "The log was saved locally, but commit failed: $($commitOutput -join ' ') Check git user.name and user.email." }; return }
-    $pushOutput = & git -C $repo push 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        Send-Json $Client 200 @{ saved = $true; pushed = $false; file = $relative; message = "The log was saved and committed locally, but push failed: $($pushOutput -join ' ')" }; return
+    $commitResult = Invoke-Git -Repository $repo -Arguments @('commit', '-m', $commitMessage)
+    if ($commitResult.ExitCode -ne 0) { Send-Json $Client 500 @{ error = "The log was saved locally, but commit failed: $($commitResult.Output -join ' ') Check git user.name and user.email." }; return }
+    $pushResult = Invoke-Git -Repository $repo -Arguments @('push')
+    if ($pushResult.ExitCode -ne 0) {
+        Send-Json $Client 200 @{ saved = $true; pushed = $false; file = $relative; message = "The log was saved and committed locally, but push failed: $($pushResult.Output -join ' ')" }; return
     }
     Send-Json $Client 200 @{ saved = $true; pushed = $true; file = $relative; message = 'Log saved, committed, and pushed successfully.' }
 }
