@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>IELTS Study Log</title>
@@ -32,15 +32,15 @@
   <header class="top"><div class="top-brand"><span class="brand-mark">IELTS</span><h1>IELTS Study Log</h1></div><div class="top-meta"><span class="today-stamp" id="todayStamp"></span><div id="status" class="status" role="status" aria-live="polite"></div></div></header>
 
   <section class="card repo-row">
-    <div><label for="repoSelect">Repository</label><select id="repoSelect"><option value="">Đang tìm repository…</option></select></div>
-    <button id="refreshRepos" class="action secondary" type="button">Quét lại</button>
-    <button id="linkRepo" class="action" type="button">Liên kết</button>
+    <div><label for="repoSelect">Repository</label><select id="repoSelect"><option value="">Searching repositories…</option></select></div>
+    <button id="refreshRepos" class="action secondary" type="button">Refresh</button>
+    <button id="linkRepo" class="action" type="button">Link repository</button>
   </section>
 
 
   <div class="workspace">
-    <nav class="card sidebar" aria-label="Kỹ năng IELTS">
-      <div class="sidebar-brand"><span class="brand-mini">IELTS</span><strong>Kỹ năng</strong></div>
+    <nav class="card sidebar" aria-label="IELTS skills">
+      <div class="sidebar-brand"><span class="brand-mini">IELTS</span><strong>Skills</strong></div>
       <div class="side-title">SKILLS</div>
       <button class="skill-button active" type="button" data-skill="Listening"><span class="skill-icon"><svg viewBox="0 0 24 24"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="3" y="12" width="4" height="7" rx="2"/><rect x="17" y="12" width="4" height="7" rx="2"/><path d="M19 19a4 4 0 0 1-4 3h-2"/></svg></span><span>Listening</span></button>
       <button class="skill-button" type="button" data-skill="Reading"><span class="skill-icon"><svg viewBox="0 0 24 24"><path d="M12 6c-2.5-2-5.5-2-9-1v14c3.5-1 6.5-1 9 1 2.5-2 5.5-2 9-1V5c-3.5-1-6.5-1-9 1z"/><path d="M12 6v14"/></svg></span><span>Reading</span></button>
@@ -49,40 +49,40 @@
     </nav>
 
     <form id="logForm" class="card panel active" data-skill="Listening"><div class="panel-head"><span class="panel-icon">01</span><h2>Listening</h2></div>
-    <div class="session-fields"><div class="field"><label for="lis_source">Nguồn</label><input id="lis_source" data-session="source" value="Study4" required></div><div class="field"><label for="lis_lesson">Tên bài / đề</label><input id="lis_lesson" data-session="lesson" placeholder="Tên bài" required></div><div class="field"><label for="lis_minutes">Thời lượng (phút)</label><input id="lis_minutes" data-session="minutes" type="number" min="1" max="1440" value="30" required></div></div>
+    <div class="session-fields"><div class="field"><label for="lis_source">Source</label><input id="lis_source" data-session="source" value="Study4" required></div><div class="field"><label for="lis_lesson">Lesson / topic</label><input id="lis_lesson" data-session="lesson" placeholder="Lesson title" required></div><div class="field"><label for="lis_minutes">Duration (minutes)</label><input id="lis_minutes" data-session="minutes" type="number" min="1" max="1440" value="30" required></div></div>
     <div class="skill-grid">
-      <div class="field"><label for="lis_part">Section / phần</label><select id="lis_part" data-label="Section / phần"><option value="" selected>Chọn section</option><option>Section 1</option><option>Section 2</option><option>Section 3</option><option>Section 4</option><option>Full test</option></select></div>
-      <div class="field"><label for="lis_score">Kết quả</label><input id="lis_score" data-label="Kết quả" placeholder="8/10"></div>
-      <div class="field"><label for="lis_types">Dạng câu hỏi</label><input id="lis_types" data-label="Dạng câu hỏi"></div>
-      <div class="field full"><label for="lis_mistakes">Lỗi / câu cần xem lại</label><textarea id="lis_mistakes" data-label="Lỗi cần sửa"></textarea></div>
+      <div class="field"><label for="lis_part">Section</label><select id="lis_part" data-label="Section"><option value="" selected>Select a section</option><option>Section 1</option><option>Section 2</option><option>Section 3</option><option>Section 4</option><option>Full test</option></select></div>
+      <div class="field"><label for="lis_score">Score</label><input id="lis_score" data-label="Score" placeholder="8/10"></div>
+      <div class="field"><label for="lis_types">Question types</label><input id="lis_types" data-label="Question types"></div>
+      <div class="field full"><label for="lis_mistakes">Mistakes / review notes</label><textarea id="lis_mistakes" data-label="Mistakes to review"></textarea></div>
     </div></form>
 
     <form id="readingForm" class="card panel" data-skill="Reading"><div class="panel-head"><span class="panel-icon">02</span><h2>Reading</h2></div>
-    <div class="session-fields"><div class="field"><label for="rea_source">Nguồn</label><input id="rea_source" data-session="source" value="Study4" required></div><div class="field"><label for="rea_lesson">Tên bài / đề</label><input id="rea_lesson" data-session="lesson" placeholder="Tên bài" required></div><div class="field"><label for="rea_minutes">Thời lượng (phút)</label><input id="rea_minutes" data-session="minutes" type="number" min="1" max="1440" value="30" required></div></div>
+    <div class="session-fields"><div class="field"><label for="rea_source">Source</label><input id="rea_source" data-session="source" value="Study4" required></div><div class="field"><label for="rea_lesson">Lesson / topic</label><input id="rea_lesson" data-session="lesson" placeholder="Lesson title" required></div><div class="field"><label for="rea_minutes">Duration (minutes)</label><input id="rea_minutes" data-session="minutes" type="number" min="1" max="1440" value="30" required></div></div>
     <div class="skill-grid">
-      <div class="field"><label for="rea_passage">Passage / phần</label><select id="rea_passage" data-label="Passage / phần"><option value="" selected>Chọn passage</option><option>Passage 1</option><option>Passage 2</option><option>Passage 3</option><option>Full test</option></select></div>
-      <div class="field"><label for="rea_score">Kết quả</label><input id="rea_score" data-label="Kết quả" placeholder="11/13"></div>
-      <div class="field"><label for="rea_types">Dạng câu hỏi</label><input id="rea_types" data-label="Dạng câu hỏi"></div>
-      <div class="field full"><label for="rea_mistakes">Lỗi / câu cần xem lại</label><textarea id="rea_mistakes" data-label="Lỗi cần sửa"></textarea></div>
+      <div class="field"><label for="rea_passage">Passage</label><select id="rea_passage" data-label="Passage"><option value="" selected>Select a passage</option><option>Passage 1</option><option>Passage 2</option><option>Passage 3</option><option>Full test</option></select></div>
+      <div class="field"><label for="rea_score">Score</label><input id="rea_score" data-label="Score" placeholder="11/13"></div>
+      <div class="field"><label for="rea_types">Question types</label><input id="rea_types" data-label="Question types"></div>
+      <div class="field full"><label for="rea_mistakes">Mistakes / review notes</label><textarea id="rea_mistakes" data-label="Mistakes to review"></textarea></div>
     </div></form>
 
     <form id="writingForm" class="card panel" data-skill="Writing"><div class="panel-head"><span class="panel-icon">03</span><h2>Writing</h2></div>
-    <div class="session-fields"><div class="field"><label for="wri_source">Nguồn</label><input id="wri_source" data-session="source" value="Study4" required></div><div class="field"><label for="wri_lesson">Tên bài / đề</label><input id="wri_lesson" data-session="lesson" placeholder="Tên bài" required></div><div class="field"><label for="wri_minutes">Thời lượng (phút)</label><input id="wri_minutes" data-session="minutes" type="number" min="1" max="1440" value="30" required></div></div>
+    <div class="session-fields"><div class="field"><label for="wri_source">Source</label><input id="wri_source" data-session="source" value="Study4" required></div><div class="field"><label for="wri_lesson">Lesson / topic</label><input id="wri_lesson" data-session="lesson" placeholder="Lesson title" required></div><div class="field"><label for="wri_minutes">Duration (minutes)</label><input id="wri_minutes" data-session="minutes" type="number" min="1" max="1440" value="30" required></div></div>
     <div class="skill-grid">
-      <div class="field"><label for="wri_task">Dạng bài</label><select id="wri_task" data-label="Dạng bài"><option>Task 1 Academic</option><option>Task 1 General Training</option><option>Task 2</option></select></div>
-      <div class="field"><label for="wri_words">Số từ</label><input id="wri_words" data-label="Số từ" type="number" min="0"></div>
-      <div class="field"><label for="wri_band">Band tự đánh giá</label><input id="wri_band" data-label="Band tự đánh giá"></div>
-      <div class="field"><label for="wri_topic">Chủ đề / đề bài</label><textarea id="wri_topic" data-label="Chủ đề / đề bài"></textarea></div>
-      <div class="field wide"><label for="wri_feedback">Nhận xét / điểm cần sửa</label><textarea id="wri_feedback" data-label="Nhận xét / điểm cần sửa"></textarea></div>
+      <div class="field"><label for="wri_task">Task type</label><select id="wri_task" data-label="Task type"><option>Task 1 Academic</option><option>Task 1 General Training</option><option>Task 2</option></select></div>
+      <div class="field"><label for="wri_words">Word count</label><input id="wri_words" data-label="Word count" type="number" min="0"></div>
+      <div class="field"><label for="wri_band">Self-assessed band</label><input id="wri_band" data-label="Self-assessed band"></div>
+      <div class="field"><label for="wri_topic">Prompt / topic</label><textarea id="wri_topic" data-label="Prompt / topic"></textarea></div>
+      <div class="field wide"><label for="wri_feedback">Feedback / areas to improve</label><textarea id="wri_feedback" data-label="Feedback / areas to improve"></textarea></div>
     </div></form>
 
     <form id="speakingForm" class="card panel" data-skill="Speaking"><div class="panel-head"><span class="panel-icon">04</span><h2>Speaking</h2></div>
-    <div class="session-fields"><div class="field"><label for="spe_source">Nguồn</label><input id="spe_source" data-session="source" value="Study4" required></div><div class="field"><label for="spe_lesson">Tên bài / đề</label><input id="spe_lesson" data-session="lesson" placeholder="Tên bài" required></div><div class="field"><label for="spe_minutes">Thời lượng (phút)</label><input id="spe_minutes" data-session="minutes" type="number" min="1" max="1440" value="30" required></div></div>
+    <div class="session-fields"><div class="field"><label for="spe_source">Source</label><input id="spe_source" data-session="source" value="Study4" required></div><div class="field"><label for="spe_lesson">Lesson / topic</label><input id="spe_lesson" data-session="lesson" placeholder="Lesson title" required></div><div class="field"><label for="spe_minutes">Duration (minutes)</label><input id="spe_minutes" data-session="minutes" type="number" min="1" max="1440" value="30" required></div></div>
     <div class="skill-grid">
       <div class="field"><label for="spe_part">Part</label><select id="spe_part" data-label="Part"><option>Part 1</option><option>Part 2</option><option>Part 3</option><option>Full test</option></select></div>
-      <div class="field"><label for="spe_topic">Chủ đề</label><input id="spe_topic" data-label="Chủ đề"></div>
-      <div class="field"><label for="spe_recording">Link ghi âm</label><input id="spe_recording" data-label="Link ghi âm" type="url"></div>
-      <div class="field full"><label for="spe_review">Tự đánh giá</label><textarea id="spe_review" data-label="Tự đánh giá"></textarea></div>
+      <div class="field"><label for="spe_topic">Topic</label><input id="spe_topic" data-label="Topic"></div>
+      <div class="field"><label for="spe_recording">Recording link</label><input id="spe_recording" data-label="Recording link" type="url"></div>
+      <div class="field full"><label for="spe_review">Self-assessment</label><textarea id="spe_review" data-label="Self-assessment"></textarea></div>
     </div></form>
   </div>
 
@@ -91,19 +91,19 @@
 <script>
   const $=id=>document.getElementById(id);
   const localDate=()=>{const now=new Date();return [now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');};
-  const updateToday=()=>{$('todayStamp').textContent='Ngày học · '+new Intl.DateTimeFormat('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date());};
+  const updateToday=()=>{$('todayStamp').textContent='Study date · '+new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date());};
   updateToday();setInterval(updateToday,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateToday();});
   let currentSkill='Listening';
   const forms=Object.fromEntries([...document.querySelectorAll('.panel')].map(form=>[form.dataset.skill,form]));
   function setStatus(message,kind){const el=$('status');el.textContent=message;el.className=message?`status show ${kind}`:'status';}
   function selectSkill(skill){currentSkill=skill;document.querySelectorAll('.skill-button').forEach(button=>button.classList.toggle('active',button.dataset.skill===skill));document.querySelectorAll('.panel').forEach(panel=>panel.classList.toggle('active',panel.dataset.skill===skill));$('submit').setAttribute('form',forms[skill].id);}
   document.querySelectorAll('.skill-button').forEach(button=>button.addEventListener('click',()=>selectSkill(button.dataset.skill)));
-  async function request(path,body){const res=await fetch(path,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});const data=await res.json().catch(()=>({}));if(!res.ok){if(res.status===404&&(path==='/api/repos'||path==='/api/config'))throw new Error('Server đang chạy phiên bản cũ. Đóng cửa sổ CMD của app bằng Ctrl+C rồi chạy lại ieltslog.');throw new Error(data.error||'Yêu cầu thất bại');}return data;}
-  fetch('/api/version').then(async response=>{if(!response.ok)throw new Error('old');const info=await response.json();if(info.version<3)throw new Error('old');}).catch(()=>setStatus('Server đang chạy phiên bản cũ. Đóng cửa sổ CMD của app bằng Ctrl+C rồi chạy lại ieltslog.','err'));
-  function fillRepos(repos,currentPath){const select=$('repoSelect');select.replaceChildren();if(!repos.length){const empty=document.createElement('option');empty.value='';empty.textContent='Không tìm thấy repo';select.appendChild(empty);return;}for(const repo of repos){const option=document.createElement('option');option.value=repo.path;option.textContent=repo.name+' — '+repo.path;if(currentPath&&repo.path.toLowerCase()===currentPath.toLowerCase())option.selected=true;select.appendChild(option);}if(currentPath&&!repos.some(repo=>repo.path.toLowerCase()===currentPath.toLowerCase())){const current=document.createElement('option');current.value=currentPath;current.textContent=currentPath.split(/[\\/]/).pop()+' — '+currentPath;current.selected=true;select.appendChild(current);}}
-  async function loadRepos(showMessage){if(showMessage)setStatus('Đang quét repo…','info');try{const [config,list]=await Promise.all([request('/api/config'),request('/api/repos')]);fillRepos(list.repositories||[],config.repoPath);if(showMessage)setStatus('Danh sách repo đã cập nhật.','ok');}catch(error){setStatus(error.message,'err');}}
+  async function request(path,body){const res=await fetch(path,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});const data=await res.json().catch(()=>({}));if(!res.ok){if(res.status===404&&(path==='/api/repos'||path==='/api/config'))throw new Error('The app server is outdated. Close its Command Prompt window with Ctrl+C, then run ieltslog again.');throw new Error(data.error||'Request failed');}return data;}
+  fetch('/api/version').then(async response=>{if(!response.ok)throw new Error('old');const info=await response.json();if(info.version<3)throw new Error('old');}).catch(()=>setStatus('The app server is outdated. Close its Command Prompt window with Ctrl+C, then run ieltslog again.','err'));
+  function fillRepos(repos,currentPath){const select=$('repoSelect');select.replaceChildren();if(!repos.length){const empty=document.createElement('option');empty.value='';empty.textContent='No repositories found';select.appendChild(empty);return;}for(const repo of repos){const option=document.createElement('option');option.value=repo.path;option.textContent=repo.name+' — '+repo.path;if(currentPath&&repo.path.toLowerCase()===currentPath.toLowerCase())option.selected=true;select.appendChild(option);}if(currentPath&&!repos.some(repo=>repo.path.toLowerCase()===currentPath.toLowerCase())){const current=document.createElement('option');current.value=currentPath;current.textContent=currentPath.split(/[\\/]/).pop()+' — '+currentPath;current.selected=true;select.appendChild(current);}}
+  async function loadRepos(showMessage){if(showMessage)setStatus('Scanning repositories…','info');try{const [config,list]=await Promise.all([request('/api/config'),request('/api/repos')]);fillRepos(list.repositories||[],config.repoPath);if(showMessage)setStatus('Repository list refreshed.','ok');}catch(error){setStatus(error.message,'err');}}
   $('refreshRepos').addEventListener('click',async()=>{const button=$('refreshRepos');button.disabled=true;await loadRepos(true);button.disabled=false;});
-  $('linkRepo').addEventListener('click',async()=>{const button=$('linkRepo');button.disabled=true;const repoPath=$('repoSelect').value;if(!repoPath){setStatus('Chưa có repository để liên kết.','err');button.disabled=false;return;}try{await request('/api/config',{repoPath});setStatus('Repository đã liên kết.','ok');}catch(error){setStatus(error.message,'err');}finally{button.disabled=false;}});
+  $('linkRepo').addEventListener('click',async()=>{const button=$('linkRepo');button.disabled=true;const repoPath=$('repoSelect').value;if(!repoPath){setStatus('Select a repository to link.','err');button.disabled=false;return;}try{await request('/api/config',{repoPath});setStatus('Repository linked.','ok');}catch(error){setStatus(error.message,'err');}finally{button.disabled=false;}});
   loadRepos(false);
-  document.querySelectorAll('.panel').forEach(form=>form.addEventListener('submit',async event=>{event.preventDefault();const button=$('submit');button.disabled=true;setStatus('Đang lưu, commit và push…','info');const skillForm=forms[currentSkill];const field=name=>skillForm.querySelector('[data-session="'+name+'"]');const details=[...skillForm.querySelectorAll('[data-label]')].map(el=>({label:el.dataset.label,value:el.value.trim()})).filter(item=>item.value);try{const result=await request('/api/save',{skill:currentSkill,studyDate:localDate(),source:field('source').value.trim(),lesson:field('lesson').value.trim(),minutes:field('minutes').value,details});setStatus(result.message,'ok');if(result.saved){skillForm.querySelectorAll('[data-label]').forEach(el=>{if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';});field('lesson').value='';field('minutes').value='30';}}catch(error){setStatus(error.message,'err');}finally{button.disabled=false;}}));
+  document.querySelectorAll('.panel').forEach(form=>form.addEventListener('submit',async event=>{event.preventDefault();const button=$('submit');button.disabled=true;setStatus('Saving, committing, and pushing…','info');const skillForm=forms[currentSkill];const field=name=>skillForm.querySelector('[data-session="'+name+'"]');const details=[...skillForm.querySelectorAll('[data-label]')].map(el=>({label:el.dataset.label,value:el.value.trim()})).filter(item=>item.value);try{const result=await request('/api/save',{skill:currentSkill,studyDate:localDate(),source:field('source').value.trim(),lesson:field('lesson').value.trim(),minutes:field('minutes').value,details});setStatus(result.message,'ok');if(result.saved){skillForm.querySelectorAll('[data-label]').forEach(el=>{if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';});field('lesson').value='';field('minutes').value='30';}}catch(error){setStatus(error.message,'err');}finally{button.disabled=false;}}));
 </script></body></html>

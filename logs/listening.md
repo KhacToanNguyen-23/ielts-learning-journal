@@ -1,10 +1,10 @@
 # IELTS Listening log
 
-## 2026-11-16 — DEMO — DEMO ONLY — kiểm tra form và GitHub (15:31)
+## 2026-11-16 — DEMO — DEMO ONLY — test form and GitHub (15:31)
 
-- **Thời lượng:** 1 phút
-- **Section / phần:** Sample
-- **Kết quả:** Dữ liệu minh họa — không phải kết quả thật
-- **Dạng câu hỏi:** Sample form entry
-- **Lỗi cần sửa:** Bản ghi demo để kiểm tra quy trình lưu, commit và push.
+- **Duration:** 1 minute
+- **Section:** Sample
+- **Score:** Sample data — not a real result
+- **Question types:** Sample form entry
+- **Mistakes to review:** Demo entry to verify the save, commit, and push workflow.
 

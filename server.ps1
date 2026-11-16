@@ -115,7 +115,7 @@ function Escape-Md([string]$Text) {
 function Handle-Request($Client, $Request) {
     $origin = $Request.Headers['origin']
     if ($origin -and $origin -ne "http://127.0.0.1:$Port" -and $origin -ne "http://localhost:$Port") {
-        Send-Json $Client 403 @{ error = 'Yêu cầu từ origin không được phép.' }; return
+        Send-Json $Client 403 @{ error = 'Requests from this origin are not allowed.' }; return
     }
     if ($Request.Method -eq 'GET' -and $Request.Path -eq '/') {
         $html = [System.IO.File]::ReadAllBytes($HtmlPath)
@@ -135,17 +135,17 @@ function Handle-Request($Client, $Request) {
         Send-Json $Client 200 @{ version = 3 }; return
     }
     if ($Request.Method -ne 'POST' -or $Request.Path -notin @('/api/config', '/api/save')) {
-        Send-Json $Client 404 @{ error = 'Không tìm thấy đường dẫn.' }; return
+        Send-Json $Client 404 @{ error = 'Endpoint not found.' }; return
     }
     try { $data = $Request.Body | ConvertFrom-Json }
-    catch { Send-Json $Client 400 @{ error = 'Dữ liệu form không hợp lệ.' }; return }
+    catch { Send-Json $Client 400 @{ error = 'Invalid form data.' }; return }
 
     if ($Request.Path -eq '/api/config') {
         $repoPath = [string]$data.repoPath
-        if (-not (Test-Path -LiteralPath $repoPath -PathType Container)) { Send-Json $Client 400 @{ error = 'Không tìm thấy thư mục repo.' }; return }
+        if (-not (Test-Path -LiteralPath $repoPath -PathType Container)) { Send-Json $Client 400 @{ error = 'Repository folder not found.' }; return }
         $repoPath = (Resolve-Path -LiteralPath $repoPath).Path
         $root = & git -C $repoPath rev-parse --show-toplevel 2>&1
-        if ($LASTEXITCODE -ne 0) { Send-Json $Client 400 @{ error = 'Đường dẫn này chưa phải Git repository.' }; return }
+        if ($LASTEXITCODE -ne 0) { Send-Json $Client 400 @{ error = 'The selected folder is not a Git repository.' }; return }
         New-Item -ItemType Directory -Path $ConfigDir -Force | Out-Null
         @{ repoPath = $repoPath } | ConvertTo-Json | Set-Content -LiteralPath $ConfigPath -Encoding UTF8
         Send-Json $Client 200 @{ repoPath = $repoPath; ok = $true }; return
@@ -153,19 +153,19 @@ function Handle-Request($Client, $Request) {
 
     $config = Read-Config
     $repo = [string]$config.repoPath
-    if (-not $repo -or -not (Test-Path -LiteralPath $repo -PathType Container)) { Send-Json $Client 400 @{ error = 'Chọn và lưu repository local trước.' }; return }
+    if (-not $repo -or -not (Test-Path -LiteralPath $repo -PathType Container)) { Send-Json $Client 400 @{ error = 'Select and link a local repository first.' }; return }
     $skillFiles = @{ Listening = 'listening'; Reading = 'reading'; Writing = 'writing'; Speaking = 'speaking' }
     $skill = [string]$data.skill
-    if (-not $skillFiles.ContainsKey($skill)) { Send-Json $Client 400 @{ error = 'Kỹ năng không hợp lệ.' }; return }
+    if (-not $skillFiles.ContainsKey($skill)) { Send-Json $Client 400 @{ error = 'Invalid skill.' }; return }
     $dateValue = [datetime]::MinValue
-    if (-not [datetime]::TryParseExact([string]$data.studyDate, 'yyyy-MM-dd', [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::None, [ref]$dateValue)) { Send-Json $Client 400 @{ error = 'Ngày học không hợp lệ.' }; return }
+    if (-not [datetime]::TryParseExact([string]$data.studyDate, 'yyyy-MM-dd', [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::None, [ref]$dateValue)) { Send-Json $Client 400 @{ error = 'Invalid study date.' }; return }
     $minutes = 0
-    if (-not [int]::TryParse([string]$data.minutes, [ref]$minutes) -or $minutes -lt 1 -or $minutes -gt 1440) { Send-Json $Client 400 @{ error = 'Thời lượng phải từ 1 đến 1440 phút.' }; return }
-    if (-not [string]$data.source -or -not [string]$data.lesson) { Send-Json $Client 400 @{ error = 'Hãy điền nguồn học và tên bài.' }; return }
+    if (-not [int]::TryParse([string]$data.minutes, [ref]$minutes) -or $minutes -lt 1 -or $minutes -gt 1440) { Send-Json $Client 400 @{ error = 'Duration must be between 1 and 1440 minutes.' }; return }
+    if (-not [string]$data.source -or -not [string]$data.lesson) { Send-Json $Client 400 @{ error = 'Enter a source and lesson title.' }; return }
 
     $staged = & git -C $repo diff --cached --quiet 2>&1
-    if ($LASTEXITCODE -eq 1) { Send-Json $Client 409 @{ error = 'Repo đang có thay đổi khác đã stage. Hãy commit hoặc unstage chúng rồi submit lại.' }; return }
-    if ($LASTEXITCODE -gt 1) { Send-Json $Client 500 @{ error = "Không kiểm tra được Git staging: $($staged -join ' ')" }; return }
+    if ($LASTEXITCODE -eq 1) { Send-Json $Client 409 @{ error = 'The repository has other staged changes. Commit or unstage them before submitting.' }; return }
+    if ($LASTEXITCODE -gt 1) { Send-Json $Client 500 @{ error = "Could not inspect the Git staging area: $($staged -join ' ')" }; return }
 
     $relative = "logs/$($skillFiles[$skill]).md"
     $destination = Join-Path $repo (Join-Path 'logs' "$($skillFiles[$skill]).md")
@@ -175,7 +175,7 @@ function Handle-Request($Client, $Request) {
     $lines = New-Object 'System.Collections.Generic.List[string]'
     $lines.Add("## $($dateValue.ToString('yyyy-MM-dd')) — $(Escape-Md ([string]$data.source)) — $(Escape-Md ([string]$data.lesson)) ($time)")
     $lines.Add('')
-    $lines.Add("- **Thời lượng:** $minutes phút")
+    $lines.Add("- **Duration:** $minutes minutes")
     foreach ($detail in @($data.details)) {
         if ($detail.value -and $detail.label) { $lines.Add("- **$(Escape-Md ([string]$detail.label)):** $(Escape-Md ([string]$detail.value))") }
     }
@@ -183,23 +183,23 @@ function Handle-Request($Client, $Request) {
     [System.IO.File]::AppendAllText($destination, (($lines -join "`r`n") + "`r`n"), $Utf8NoBom)
 
     $addOutput = & git -C $repo add -- $relative 2>&1
-    if ($LASTEXITCODE -ne 0) { Send-Json $Client 500 @{ error = "Log đã ghi ở local nhưng git add lỗi: $($addOutput -join ' ')" }; return }
+    if ($LASTEXITCODE -ne 0) { Send-Json $Client 500 @{ error = "The log was saved locally, but git add failed: $($addOutput -join ' ')" }; return }
     $commitMessage = "Log IELTS $skill - $($dateValue.ToString('yyyy-MM-dd'))"
     $commitOutput = & git -C $repo commit -m $commitMessage 2>&1
-    if ($LASTEXITCODE -ne 0) { Send-Json $Client 500 @{ error = "Log đã ghi ở local nhưng commit lỗi: $($commitOutput -join ' ') Kiểm tra git user.name và user.email." }; return }
+    if ($LASTEXITCODE -ne 0) { Send-Json $Client 500 @{ error = "The log was saved locally, but commit failed: $($commitOutput -join ' ') Check git user.name and user.email." }; return }
     $pushOutput = & git -C $repo push 2>&1
     if ($LASTEXITCODE -ne 0) {
-        Send-Json $Client 200 @{ saved = $true; pushed = $false; file = $relative; message = "Log đã ghi và commit local. Push lỗi: $($pushOutput -join ' ')" }; return
+        Send-Json $Client 200 @{ saved = $true; pushed = $false; file = $relative; message = "The log was saved and committed locally, but push failed: $($pushOutput -join ' ')" }; return
     }
-    Send-Json $Client 200 @{ saved = $true; pushed = $true; file = $relative; message = 'Đã ghi log, commit và push thành công.' }
+    Send-Json $Client 200 @{ saved = $true; pushed = $true; file = $relative; message = 'Log saved, committed, and pushed successfully.' }
 }
 
-if (-not (Test-Path -LiteralPath $HtmlPath)) { Write-Error 'Không tìm thấy index.html.'; exit 1 }
+if (-not (Test-Path -LiteralPath $HtmlPath)) { Write-Error 'index.html was not found.'; exit 1 }
 $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $Port)
 try { $listener.Start() }
-catch { Write-Error "Không mở được cổng $Port. Có thể app đã chạy hoặc cổng đang được dùng."; exit 1 }
-Write-Host "IELTS Study Log đang chạy tại http://127.0.0.1:$Port"
-Write-Host 'Chỉ nghe trên máy này. Đóng cửa sổ CMD hoặc nhấn Ctrl+C để dừng.'
+catch { Write-Error "Could not open port $Port. The app may already be running or the port is in use."; exit 1 }
+Write-Host "IELTS Study Log is running at http://127.0.0.1:$Port"
+Write-Host 'Listening on this computer only. Close this Command Prompt window or press Ctrl+C to stop.'
 Start-Process "http://127.0.0.1:$Port/"
 try {
     while ($true) {
@@ -210,7 +210,7 @@ try {
             Handle-Request $client $request
         }
         catch {
-            try { Send-Json $client 500 @{ error = "Lỗi server: $($_.Exception.Message)" } } catch { }
+            try { Send-Json $client 500 @{ error = "Server error: $($_.Exception.Message)" } } catch { }
             Write-Host $_.Exception.Message
         }
         finally { $client.Close() }
