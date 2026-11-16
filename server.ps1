@@ -95,6 +95,9 @@ function Handle-Request($Client, $Request) {
     if ($Request.Method -eq 'GET' -and $Request.Path -eq '/api/config') {
         Send-Json $Client 200 (Read-Config); return
     }
+    if ($Request.Method -eq 'GET' -and $Request.Path -eq '/api/version') {
+        Send-Json $Client 200 @{ version = 2 }; return
+    }
     if ($Request.Method -ne 'POST' -or $Request.Path -notin @('/api/config', '/api/pick-repo', '/api/save')) {
         Send-Json $Client 404 @{ error = 'Không tìm thấy đường dẫn.' }; return
     }
