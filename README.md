@@ -2,6 +2,8 @@
 
 Local form for recording IELTS practice. It uses Windows PowerShell/.NET already present on Windows, and your existing Git installation. There is no database, framework, Node/Python/Go runtime, or GitHub token.
 
+The form shows four skill tabs at once—Listening, Reading, Writing, and Speaking—and uses a compact desktop layout designed to fit without page scrolling.
+
 > The repository created for this project is public. Any study logs pushed to it will also be public. Do not include private notes or private recording links.
 
 ## Start
