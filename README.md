@@ -1,43 +1,65 @@
 # IELTS Study Log
 
-Local form for recording IELTS practice. It uses Windows PowerShell/.NET already present on Windows, and your existing Git installation. There is no database, framework, Node/Python/Go runtime, or GitHub token.
+> **One IELTS session. One Markdown log. One Git commit.**  
+> Build your English skills and your developer contribution habit at the same time.
 
-The form puts Listening, Reading, Writing, and Speaking in a left sidebar and uses a compact desktop layout designed to fit without page scrolling. Each skill has its own fields. The repository selector lists Git repositories found in `D:\Project\Personal`, `%USERPROFILE%\source\repos`, and `%USERPROFILE%\Documents\GitHub`. Additional scan roots can be set in `IELTSLOG_REPO_ROOTS` using semicolon-separated paths.
+IELTS Study Log is a lightweight local app for developers who want to keep a consistent record of IELTS practice. After each session, choose a skill, fill in a short form, and submit. The app saves the session as a dated Markdown entry in your own repository, then commits and pushes it with Git.
 
-> The repository created for this project is public. Any study logs pushed to it will also be public. Do not include private notes or private recording links.
+Your practice becomes visible, reviewable, and easy to keep up with: every focused session adds another small step to your IELTS progress and your GitHub activity.
 
-## Start
+## Skills
 
-1. Clone your IELTS journal repository with GitHub Desktop or Git. Make sure `git push` already works from that checkout.
-2. In CMD, change to this app folder and run:
+- **Listening** — section, score, question types, and mistakes to review
+- **Reading** — passage, score, question types, and mistakes to review
+- **Writing** — task type, word count, self-assessed band, prompt, and feedback
+- **Speaking** — part, topic, recording link, and self-assessment
+
+The Activity Overview summarizes study sessions, time, active days, and time by skill. History lets you search and filter past sessions, sort by date, and browse them page by page.
+
+## Start on Windows
+
+1. Clone this repository, or another repository where you want to keep your study logs. Make sure Git can push to it.
+2. Open Command Prompt in the app folder and run:
 
    ```cmd
    ieltslog
    ```
 
-   Or double-click `ieltslog.cmd`. It starts the local server and opens `http://127.0.0.1:8765` in your browser. Keep the CMD window open while using the form; press Ctrl+C or close it to stop.
-3. Click **Refresh**, select your journal repository from the list, then click **Link repository**. The app remembers it locally.
-4. After studying, select the skill, fill in the prepared fields, and submit. The app appends the entry, creates a Git commit, and runs `git push`.
+   You can also double-click `ieltslog.cmd`. The app opens `http://127.0.0.1:8765` in your browser. Keep the Command Prompt window open while studying; press **Ctrl+C** or close it to stop the local server.
+3. Select your cloned log repository from the repository list and click **Link repository**.
+4. After an IELTS practice session, choose a skill in the sidebar, complete its form, and click **Submit log**.
 
-To run `ieltslog` from any CMD folder, add this app folder to your Windows user `PATH` once. Otherwise, run it from this folder.
+To run `ieltslog` from any Command Prompt folder, add the app folder to your Windows user `PATH`.
 
-## Log files
+## Your study log
 
-The landing page shows sessions, study time, active study days, and the last practice date for each skill. A four-skill radar chart shows the share of study time per skill, and a yearly heatmap shows logged sessions per day. The History page supports skill, date, and keyword filters. These activity metrics describe practice habits; they do not combine scores from different IELTS skills.
+Each skill has its own folder. Sessions are appended to a daily Markdown file:
 
-Each skill has its own folder. Daily files use the `YYYY-MM-DD.md` format, and sessions from the same day are appended to that file:
+```text
+logs/
+├── listening/YYYY-MM-DD.md
+├── reading/YYYY-MM-DD.md
+├── writing/YYYY-MM-DD.md
+└── speaking/YYYY-MM-DD.md
+```
 
-- `logs/listening/YYYY-MM-DD.md`
-- `logs/reading/YYYY-MM-DD.md`
-- `logs/writing/YYYY-MM-DD.md`
-- `logs/speaking/YYYY-MM-DD.md`
+The app uses the session date for the filename, so multiple sessions on the same day stay together. You can read these files in any text editor or browse them on GitHub.
 
-The selected skill and current date determine the file. Study4 and other sources are entered manually; the form does not access Study4.
-## How it works
+## How commits count
 
-- The server binds only to `127.0.0.1` on port `8765`.
-- Local configuration is stored as a small JSON file in `%LOCALAPPDATA%\IELTSStudyLog\config.json`; study data stays as Markdown in your Git repository.
-- Git authentication is handled by your existing Git Credential Manager/SSH setup. The app does not ask for or store a GitHub token.
-- If push fails, the Markdown and local commit remain in your repository. Resolve the Git issue and run `git push` there.
-- The app refuses to submit while unrelated changes are already staged, so its commit will not include them.
-- Make sure Git has `user.name` and `user.email` configured; use an email connected to GitHub if you want eligible commits credited on your contribution graph.
+Every successful submission creates a Git commit and pushes it to the linked repository. That gives your study habit a developer-friendly contribution trail. GitHub decides which commits appear on your contribution graph; use a commit email connected to your GitHub account, and make sure the repository and branch meet GitHub's contribution requirements.
+
+**Keep it honest and sustainable:** log real practice sessions, even if they are short. A steady record matters more than a perfect streak.
+
+> This repository is public. Any logs pushed here are public too. Avoid private notes, personal information, or private recording links. You can link a different private repository for your personal logs.
+
+## Lightweight by design
+
+- Runs locally on Windows using PowerShell and .NET.
+- Uses your existing Git installation and Git credentials.
+- No database, cloud service, extra runtime, or GitHub token.
+- Keeps study records as ordinary Markdown files.
+- Stores the linked repository setting locally in `%LOCALAPPDATA%\IELTSStudyLog\config.json`.
+- Binds only to `127.0.0.1` on port `8765`.
+
+If a push fails, your Markdown log and local commit remain in the repository. Fix the Git issue, then push from that repository. The app also requires Git `user.name` and `user.email` to be configured.
