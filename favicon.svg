@@ -1,5 +1,5 @@
 ﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <rect x="2" y="2" width="60" height="60" rx="14" fill="#153b59"/>
-  <path d="M18 17h28v7H29v7h15v7H29v14h-9V17z" fill="#fff"/>
-  <circle cx="51" cy="15" r="5" fill="#e96c36"/>
+  <text x="32" y="37" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="-0.7">IELTS</text>
+  <path d="M17 46h30" stroke="#e96c36" stroke-width="3" stroke-linecap="round"/>
 </svg>
