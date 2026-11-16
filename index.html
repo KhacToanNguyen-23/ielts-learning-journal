@@ -13,12 +13,14 @@
     button{border:0;border-radius:8px;padding:11px 16px;background:#1769e0;color:#fff;font-weight:700;font-size:14px;cursor:pointer}button:disabled{opacity:.6;cursor:wait}
     .actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px}.secondary{background:#475467}.status{white-space:pre-wrap;border-radius:8px;padding:12px 14px;margin:0 0 18px;display:none;line-height:1.5}
     .status.show{display:block}.ok{background:#ecfdf3;color:#067647}.err{background:#fef3f2;color:#b42318}.info{background:#eff8ff;color:#175cd3}
+    .visibility-note{padding:12px 14px;border-radius:8px;background:#fffaeb;color:#93370d;font-size:13px;line-height:1.5;margin:0 0 18px}
     @media(max-width:600px){.grid{grid-template-columns:1fr}main{padding:20px}}
   </style>
 </head>
 <body><main>
   <h1>IELTS Study Log</h1>
   <p class="sub">Chọn kỹ năng, điền mẫu buổi học rồi submit. Log được lưu trong repo và Git tự commit/push.</p>
+  <p class="visibility-note">Nếu repository đích là công khai, các log bạn submit cũng sẽ công khai. Đừng ghi thông tin riêng tư hoặc link ghi âm riêng tư.</p>
   <div id="status" class="status" role="status" aria-live="polite"></div>
 
   <section>

@@ -2,6 +2,8 @@
 
 Local form for recording IELTS practice. It uses Windows PowerShell/.NET already present on Windows, and your existing Git installation. There is no database, framework, Node/Python/Go runtime, or GitHub token.
 
+> The repository created for this project is public. Any study logs pushed to it will also be public. Do not include private notes or private recording links.
+
 ## Start
 
 1. Clone your IELTS journal repository with GitHub Desktop or Git. Make sure `git push` already works from that checkout.
