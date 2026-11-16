@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $Port = 8765
 $AppDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $HtmlPath = Join-Path $AppDir 'index.html'
