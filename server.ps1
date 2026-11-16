@@ -112,6 +112,41 @@ function Escape-Md([string]$Text) {
     return ($Text.Trim() -replace '\|', '\|' -replace "`r?`n", '<br>')
 }
 
+function Get-HistoryEntries([string]$Repo) {
+    $entries = New-Object 'System.Collections.Generic.List[object]'
+    $skillSlugs = @{ Listening = 'listening'; Reading = 'reading'; Writing = 'writing'; Speaking = 'speaking' }
+    foreach ($skill in @('Listening', 'Reading', 'Writing', 'Speaking')) {
+        $folder = Join-Path $Repo (Join-Path 'logs' $skillSlugs[$skill])
+        if (-not (Test-Path -LiteralPath $folder -PathType Container)) { continue }
+        foreach ($file in (Get-ChildItem -LiteralPath $folder -Filter '????-??-??.md' -File -ErrorAction SilentlyContinue)) {
+            $current = $null
+            $details = $null
+            foreach ($line in [System.IO.File]::ReadAllLines($file.FullName, [System.Text.Encoding]::UTF8)) {
+                if ($line -match '^## (?<date>\d{4}-\d{2}-\d{2}) — (?<source>.*?) — (?<lesson>.*?) \((?<time>\d{2}:\d{2})\)$') {
+                    if ($null -ne $current) {
+                        $current.details = @($details.ToArray())
+                        $entries.Add([pscustomobject]$current)
+                    }
+                    $details = New-Object 'System.Collections.Generic.List[object]'
+                    $current = [ordered]@{ date = $Matches.date; time = $Matches.time; skill = $skill; source = $Matches.source; lesson = $Matches.lesson; minutes = 0; details = @() }
+                    continue
+                }
+                if ($null -ne $current -and $line -match '^- \*\*(?<label>[^*]+):\*\* (?<value>.*)$') {
+                    if ($Matches.label -eq 'Duration') {
+                        $parsedMinutes = 0
+                        if ([int]::TryParse(($Matches.value -replace '\s+minutes?$', ''), [ref]$parsedMinutes)) { $current.minutes = $parsedMinutes }
+                    }
+                    else { $details.Add([pscustomobject]@{ label = $Matches.label; value = $Matches.value }) }
+                }
+            }
+            if ($null -ne $current) {
+                $current.details = @($details.ToArray())
+                $entries.Add([pscustomobject]$current)
+            }
+        }
+    }
+    return @($entries | Sort-Object @{ Expression = 'date'; Descending = $true }, @{ Expression = 'time'; Descending = $true })
+}
 function Handle-Request($Client, $Request) {
     $origin = $Request.Headers['origin']
     if ($origin -and $origin -ne "http://127.0.0.1:$Port" -and $origin -ne "http://localhost:$Port") {
@@ -131,8 +166,14 @@ function Handle-Request($Client, $Request) {
     if ($Request.Method -eq 'GET' -and $Request.Path -eq '/api/repos') {
         Send-Json $Client 200 @{ repositories = @(Get-RepoCandidates) }; return
     }
+    if ($Request.Method -eq 'GET' -and $Request.Path -eq '/api/history') {
+        $config = Read-Config
+        $repo = [string]$config.repoPath
+        if (-not $repo -or -not (Test-Path -LiteralPath $repo -PathType Container)) { Send-Json $Client 400 @{ error = 'Select and link a local repository first.' }; return }
+        Send-Json $Client 200 @{ entries = @(Get-HistoryEntries $repo) }; return
+    }
     if ($Request.Method -eq 'GET' -and $Request.Path -eq '/api/version') {
-        Send-Json $Client 200 @{ version = 3 }; return
+        Send-Json $Client 200 @{ version = 4 }; return
     }
     if ($Request.Method -ne 'POST' -or $Request.Path -notin @('/api/config', '/api/save')) {
         Send-Json $Client 404 @{ error = 'Endpoint not found.' }; return

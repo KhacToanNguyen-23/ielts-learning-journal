@@ -23,6 +23,8 @@ To run `ieltslog` from any CMD folder, add this app folder to your Windows user 
 
 ## Log files
 
+The landing page shows sessions, study time, active study days, and the last practice date for each skill. The History page supports skill, date, and keyword filters. These activity metrics describe practice habits; they do not combine scores from different IELTS skills.
+
 Each skill has its own folder. Daily files use the `YYYY-MM-DD.md` format, and sessions from the same day are appended to that file:
 
 - `logs/listening/YYYY-MM-DD.md`
