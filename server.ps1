@@ -95,11 +95,33 @@ function Handle-Request($Client, $Request) {
     if ($Request.Method -eq 'GET' -and $Request.Path -eq '/api/config') {
         Send-Json $Client 200 (Read-Config); return
     }
-    if ($Request.Method -ne 'POST' -or $Request.Path -notin @('/api/config', '/api/save')) {
+    if ($Request.Method -ne 'POST' -or $Request.Path -notin @('/api/config', '/api/pick-repo', '/api/save')) {
         Send-Json $Client 404 @{ error = 'Không tìm thấy đường dẫn.' }; return
     }
     try { $data = $Request.Body | ConvertFrom-Json }
     catch { Send-Json $Client 400 @{ error = 'Dữ liệu form không hợp lệ.' }; return }
+
+    if ($Request.Path -eq '/api/pick-repo') {
+        try {
+            Add-Type -AssemblyName System.Windows.Forms
+            $dialog = New-Object System.Windows.Forms.FolderBrowserDialog
+            $dialog.Description = 'Chọn thư mục Git repository đã clone'
+            $dialog.ShowNewFolderButton = $false
+            $existing = Read-Config
+            if ($existing.repoPath -and (Test-Path -LiteralPath $existing.repoPath -PathType Container)) { $dialog.SelectedPath = [string]$existing.repoPath }
+            try { $choice = $dialog.ShowDialog() }
+            finally { $dialog.Dispose() }
+            if ($choice -ne [System.Windows.Forms.DialogResult]::OK) { Send-Json $Client 200 @{ cancelled = $true }; return }
+            $selectedPath = $dialog.SelectedPath
+            $root = & git -C $selectedPath rev-parse --show-toplevel 2>&1
+            if ($LASTEXITCODE -ne 0) { Send-Json $Client 400 @{ error = 'Thư mục đã chọn không phải Git repository. Hãy chọn thư mục repo đã clone.' }; return }
+            $repoPath = ([string]$root).Trim()
+            New-Item -ItemType Directory -Path $ConfigDir -Force | Out-Null
+            @{ repoPath = $repoPath } | ConvertTo-Json | Set-Content -LiteralPath $ConfigPath -Encoding UTF8
+            Send-Json $Client 200 @{ repoPath = $repoPath; ok = $true }; return
+        }
+        catch { Send-Json $Client 500 @{ error = "Không mở được hộp thoại chọn repo: $($_.Exception.Message)" }; return }
+    }
 
     if ($Request.Path -eq '/api/config') {
         $repoPath = [string]$data.repoPath
