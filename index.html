@@ -3,14 +3,15 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>IELTS Study Log</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <style>
     :root{font-family:Segoe UI,Arial,sans-serif;color:#263746;background:#f5f7f9;font-synthesis:none;--navy:#153b59;--blue:#17628a;--orange:#e96c36;--orange-soft:#fff3ed;--line:#dfe5ea;--muted:#71808c}
     *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{overflow:hidden;padding:14px;background:#f5f7f9}
-    main{height:100%;max-width:1500px;margin:auto;display:grid;grid-template-rows:auto auto auto minmax(0,1fr) auto;gap:10px}
+    main{height:100%;max-width:1500px;margin:auto;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;gap:10px}
     .top{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:42px}.top-brand{display:flex;align-items:center;gap:12px}.brand-mark{width:40px;height:40px;border:1px solid #d9e2e9;border-radius:9px;display:grid;place-items:center;background:#fff;color:var(--navy);font-weight:800;font-size:11px;letter-spacing:.02em}
     h1{font-size:22px;line-height:1.1;margin:0;color:var(--navy);font-weight:700}.status{display:none;max-width:55%;padding:8px 11px;border-radius:7px;font-size:12px;line-height:1.35;white-space:pre-wrap}.status.show{display:block}.ok{background:#edf7f2;color:#236746}.err{background:#fff0ed;color:#b93820}.info{background:#eef5f8;color:#285c78}
     .card{background:#fff;border:1px solid var(--line);border-radius:9px;padding:8px 11px;box-shadow:0 1px 2px #172b3a08}.repo-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:end;gap:8px 10px}
-    .common-grid{display:grid;grid-template-columns:140px minmax(160px,1fr) minmax(190px,1.4fr) 130px;align-items:end;gap:8px}.common-title{display:none}.common-title strong{font-size:13px;color:var(--navy)}.section-dot{width:7px;height:7px;border-radius:50%;background:var(--orange)}
+    .top-meta{display:flex;align-items:center;gap:10px}.today-stamp{font-size:12px;font-weight:650;color:#526372;background:#f3f6f8;border:1px solid var(--line);border-radius:6px;padding:7px 10px}.session-fields{display:grid;grid-template-columns:minmax(150px,.9fr) minmax(220px,1.6fr) 130px;align-items:end;gap:8px 10px;margin-bottom:12px;padding-bottom:11px;border-bottom:1px solid #e8edf0}
     label{display:block;font-size:11px;font-weight:650;margin:0 0 5px;color:#526372}input,select,textarea{width:100%;height:34px;border:1px solid #d4dde4;border-radius:6px;padding:8px 10px;font:inherit;font-size:12px;background:#fff;color:#263746;transition:border-color .15s,box-shadow .15s}
     input:focus,select:focus,textarea:focus{outline:none;border-color:#7da8bd;box-shadow:0 0 0 2px #17628a18}input[readonly]{background:#f8fafb;color:#61717e}textarea{height:56px;min-height:56px;resize:none;line-height:1.35}
     .workspace{display:grid;grid-template-columns:300px minmax(0,1fr);gap:10px;min-height:0;align-items:stretch}.sidebar{display:flex;flex-direction:column;gap:9px;padding:16px;background:#fff;min-height:100%;height:100%}
@@ -22,13 +23,13 @@
     .panel{display:none;min-height:0;overflow:hidden;border-top:2px solid var(--navy)}.panel.active{display:block}.panel-head{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:0 0 9px;border-bottom:1px solid #e8edf0}.panel-icon{width:32px;height:32px;border:1px solid #f0c4ae;border-radius:7px;background:var(--orange-soft);color:var(--orange);display:grid;place-items:center;font-weight:750;font-size:11px}.panel-head h2{font-size:15px;margin:0;color:var(--navy);font-weight:700}
     .skill-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(61px,auto);gap:10px 12px}.field{min-width:0}.wide{grid-column:span 2}.full{grid-column:1/-1}
     button.action{border:0;border-radius:6px;height:34px;padding:0 16px;background:var(--navy);color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s}button.action:hover:not(:disabled){background:#0d304a}button.action:disabled{opacity:.6;cursor:wait}.secondary{background:#fff!important;color:var(--navy)!important;border:1px solid #b9c8d2!important}.secondary:hover:not(:disabled){background:#f5f8fa!important}.footer{display:flex;align-items:center;justify-content:flex-end;gap:12px}
-    @media(max-height:680px){body{padding:7px}main{gap:6px}.card{padding:7px 9px}.top-brand .brand-mark{width:35px;height:35px}.common-grid{gap:6px 8px}.skill-grid{grid-auto-rows:minmax(50px,auto);gap:5px 8px}textarea{height:45px;min-height:45px}.skill-button{min-height:45px}.sidebar{gap:4px}.panel-head{margin-bottom:7px}}
-    @media(max-width:900px){html,body{height:auto;min-height:100%}body{overflow:auto}main{height:auto;min-height:100vh;grid-template-rows:auto auto auto minmax(400px,1fr) auto}.common-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.workspace{grid-template-columns:235px minmax(0,1fr)}.skill-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wide{grid-column:span 1}.full{grid-column:1/-1}}
-    @media(max-width:560px){.top{align-items:flex-start;flex-direction:column}.status{max-width:100%}.repo-row{grid-template-columns:1fr}.common-grid,.skill-grid{grid-template-columns:1fr}.workspace{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:repeat(2,1fr)}.sidebar-brand,.side-title{grid-column:1/-1}.wide,.full{grid-column:1}.footer{justify-content:stretch}.footer button{width:100%}.skill-grid{grid-auto-rows:auto}}
+    @media(max-height:680px){body{padding:7px}main{gap:6px}.card{padding:7px 9px}.top-brand .brand-mark{width:35px;height:35px}.session-fields{gap:6px 8px;margin-bottom:8px;padding-bottom:8px}.skill-grid{grid-auto-rows:minmax(50px,auto);gap:5px 8px}textarea{height:45px;min-height:45px}.skill-button{min-height:45px}.sidebar{gap:4px}.panel-head{margin-bottom:7px}}
+    @media(max-width:900px){html,body{height:auto;min-height:100%}body{overflow:auto}main{height:auto;min-height:100vh;grid-template-rows:auto auto minmax(400px,1fr) auto}.session-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.workspace{grid-template-columns:235px minmax(0,1fr)}.skill-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wide{grid-column:span 1}.full{grid-column:1/-1}}
+    @media(max-width:560px){.top{align-items:flex-start;flex-direction:column}.status{max-width:100%}.repo-row{grid-template-columns:1fr}.session-fields,.skill-grid{grid-template-columns:1fr}.workspace{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:repeat(2,1fr)}.sidebar-brand,.side-title{grid-column:1/-1}.wide,.full{grid-column:1}.footer{justify-content:stretch}.footer button{width:100%}.skill-grid{grid-auto-rows:auto}}
   </style>
 </head>
 <body><main>
-  <header class="top"><div class="top-brand"><span class="brand-mark">IELTS</span><h1>IELTS Study Log</h1></div><div id="status" class="status" role="status" aria-live="polite"></div></header>
+  <header class="top"><div class="top-brand"><span class="brand-mark">IELTS</span><h1>IELTS Study Log</h1></div><div class="top-meta"><span class="today-stamp" id="todayStamp"></span><div id="status" class="status" role="status" aria-live="polite"></div></div></header>
 
   <section class="card repo-row">
     <div><label for="repoSelect">Repository</label><select id="repoSelect"><option value="">Đang tìm repository…</option></select></div>
@@ -36,13 +37,6 @@
     <button id="linkRepo" class="action" type="button">Liên kết</button>
   </section>
 
-  <section class="card common-grid">
-    <div class="common-title"><span class="section-dot"></span><strong>Thông tin buổi học</strong></div>
-    <div><label for="studyDate">Ngày học</label><input id="studyDate" type="date" required></div>
-    <div><label for="source">Nguồn</label><input id="source" value="Study4" placeholder="Nguồn học" required></div>
-    <div><label for="lesson">Tên bài / đề</label><input id="lesson" placeholder="Tên bài" required></div>
-    <div><label for="minutes">Thời lượng (phút)</label><input id="minutes" type="number" min="1" max="1440" value="30" required></div>
-  </section>
 
   <div class="workspace">
     <nav class="card sidebar" aria-label="Kỹ năng IELTS">
@@ -54,21 +48,27 @@
       <button class="skill-button" type="button" data-skill="Speaking"><span class="skill-icon"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3m-4 0h8"/></svg></span><span>Speaking</span></button>
     </nav>
 
-    <form id="logForm" class="card panel active" data-skill="Listening"><div class="panel-head"><span class="panel-icon">01</span><h2>Listening</h2></div><div class="skill-grid">
+    <form id="logForm" class="card panel active" data-skill="Listening"><div class="panel-head"><span class="panel-icon">01</span><h2>Listening</h2></div>
+    <div class="session-fields"><div class="field"><label for="lis_source">Nguồn</label><input id="lis_source" data-session="source" value="Study4" required></div><div class="field"><label for="lis_lesson">Tên bài / đề</label><input id="lis_lesson" data-session="lesson" placeholder="Tên bài" required></div><div class="field"><label for="lis_minutes">Thời lượng (phút)</label><input id="lis_minutes" data-session="minutes" type="number" min="1" max="1440" value="30" required></div></div>
+    <div class="skill-grid">
       <div class="field"><label for="lis_part">Section / phần</label><select id="lis_part" data-label="Section / phần"><option value="" selected>Chọn section</option><option>Section 1</option><option>Section 2</option><option>Section 3</option><option>Section 4</option><option>Full test</option></select></div>
       <div class="field"><label for="lis_score">Kết quả</label><input id="lis_score" data-label="Kết quả" placeholder="8/10"></div>
       <div class="field"><label for="lis_types">Dạng câu hỏi</label><input id="lis_types" data-label="Dạng câu hỏi"></div>
       <div class="field full"><label for="lis_mistakes">Lỗi / câu cần xem lại</label><textarea id="lis_mistakes" data-label="Lỗi cần sửa"></textarea></div>
     </div></form>
 
-    <form id="readingForm" class="card panel" data-skill="Reading"><div class="panel-head"><span class="panel-icon">02</span><h2>Reading</h2></div><div class="skill-grid">
+    <form id="readingForm" class="card panel" data-skill="Reading"><div class="panel-head"><span class="panel-icon">02</span><h2>Reading</h2></div>
+    <div class="session-fields"><div class="field"><label for="rea_source">Nguồn</label><input id="rea_source" data-session="source" value="Study4" required></div><div class="field"><label for="rea_lesson">Tên bài / đề</label><input id="rea_lesson" data-session="lesson" placeholder="Tên bài" required></div><div class="field"><label for="rea_minutes">Thời lượng (phút)</label><input id="rea_minutes" data-session="minutes" type="number" min="1" max="1440" value="30" required></div></div>
+    <div class="skill-grid">
       <div class="field"><label for="rea_passage">Passage / phần</label><select id="rea_passage" data-label="Passage / phần"><option value="" selected>Chọn passage</option><option>Passage 1</option><option>Passage 2</option><option>Passage 3</option><option>Full test</option></select></div>
       <div class="field"><label for="rea_score">Kết quả</label><input id="rea_score" data-label="Kết quả" placeholder="11/13"></div>
       <div class="field"><label for="rea_types">Dạng câu hỏi</label><input id="rea_types" data-label="Dạng câu hỏi"></div>
       <div class="field full"><label for="rea_mistakes">Lỗi / câu cần xem lại</label><textarea id="rea_mistakes" data-label="Lỗi cần sửa"></textarea></div>
     </div></form>
 
-    <form id="writingForm" class="card panel" data-skill="Writing"><div class="panel-head"><span class="panel-icon">03</span><h2>Writing</h2></div><div class="skill-grid">
+    <form id="writingForm" class="card panel" data-skill="Writing"><div class="panel-head"><span class="panel-icon">03</span><h2>Writing</h2></div>
+    <div class="session-fields"><div class="field"><label for="wri_source">Nguồn</label><input id="wri_source" data-session="source" value="Study4" required></div><div class="field"><label for="wri_lesson">Tên bài / đề</label><input id="wri_lesson" data-session="lesson" placeholder="Tên bài" required></div><div class="field"><label for="wri_minutes">Thời lượng (phút)</label><input id="wri_minutes" data-session="minutes" type="number" min="1" max="1440" value="30" required></div></div>
+    <div class="skill-grid">
       <div class="field"><label for="wri_task">Dạng bài</label><select id="wri_task" data-label="Dạng bài"><option>Task 1 Academic</option><option>Task 1 General Training</option><option>Task 2</option></select></div>
       <div class="field"><label for="wri_words">Số từ</label><input id="wri_words" data-label="Số từ" type="number" min="0"></div>
       <div class="field"><label for="wri_band">Band tự đánh giá</label><input id="wri_band" data-label="Band tự đánh giá"></div>
@@ -76,7 +76,9 @@
       <div class="field wide"><label for="wri_feedback">Nhận xét / điểm cần sửa</label><textarea id="wri_feedback" data-label="Nhận xét / điểm cần sửa"></textarea></div>
     </div></form>
 
-    <form id="speakingForm" class="card panel" data-skill="Speaking"><div class="panel-head"><span class="panel-icon">04</span><h2>Speaking</h2></div><div class="skill-grid">
+    <form id="speakingForm" class="card panel" data-skill="Speaking"><div class="panel-head"><span class="panel-icon">04</span><h2>Speaking</h2></div>
+    <div class="session-fields"><div class="field"><label for="spe_source">Nguồn</label><input id="spe_source" data-session="source" value="Study4" required></div><div class="field"><label for="spe_lesson">Tên bài / đề</label><input id="spe_lesson" data-session="lesson" placeholder="Tên bài" required></div><div class="field"><label for="spe_minutes">Thời lượng (phút)</label><input id="spe_minutes" data-session="minutes" type="number" min="1" max="1440" value="30" required></div></div>
+    <div class="skill-grid">
       <div class="field"><label for="spe_part">Part</label><select id="spe_part" data-label="Part"><option>Part 1</option><option>Part 2</option><option>Part 3</option><option>Full test</option></select></div>
       <div class="field"><label for="spe_topic">Chủ đề</label><input id="spe_topic" data-label="Chủ đề"></div>
       <div class="field"><label for="spe_recording">Link ghi âm</label><input id="spe_recording" data-label="Link ghi âm" type="url"></div>
@@ -88,7 +90,9 @@
 </main>
 <script>
   const $=id=>document.getElementById(id);
-  $('studyDate').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+  const localDate=()=>{const now=new Date();return [now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');};
+  const updateToday=()=>{$('todayStamp').textContent='Ngày học · '+new Intl.DateTimeFormat('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date());};
+  updateToday();setInterval(updateToday,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateToday();});
   let currentSkill='Listening';
   const forms=Object.fromEntries([...document.querySelectorAll('.panel')].map(form=>[form.dataset.skill,form]));
   function setStatus(message,kind){const el=$('status');el.textContent=message;el.className=message?`status show ${kind}`:'status';}
@@ -101,5 +105,5 @@
   $('refreshRepos').addEventListener('click',async()=>{const button=$('refreshRepos');button.disabled=true;await loadRepos(true);button.disabled=false;});
   $('linkRepo').addEventListener('click',async()=>{const button=$('linkRepo');button.disabled=true;const repoPath=$('repoSelect').value;if(!repoPath){setStatus('Chưa có repository để liên kết.','err');button.disabled=false;return;}try{await request('/api/config',{repoPath});setStatus('Repository đã liên kết.','ok');}catch(error){setStatus(error.message,'err');}finally{button.disabled=false;}});
   loadRepos(false);
-  document.querySelectorAll('.panel').forEach(form=>form.addEventListener('submit',async event=>{event.preventDefault();if(!$('lesson').reportValidity()||!$('source').reportValidity()||!$('minutes').reportValidity()||!$('studyDate').reportValidity())return;const button=$('submit');button.disabled=true;setStatus('Đang lưu, commit và push…','info');const skillForm=forms[currentSkill];const details=[...skillForm.querySelectorAll('[data-label]')].map(el=>({label:el.dataset.label,value:el.value.trim()})).filter(item=>item.value);try{const result=await request('/api/save',{skill:currentSkill,studyDate:$('studyDate').value,source:$('source').value.trim(),lesson:$('lesson').value.trim(),minutes:$('minutes').value,details});setStatus(result.message,'ok');if(result.saved)skillForm.querySelectorAll('[data-label]').forEach(el=>{if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';});}catch(error){setStatus(error.message,'err');}finally{button.disabled=false;}}));
+  document.querySelectorAll('.panel').forEach(form=>form.addEventListener('submit',async event=>{event.preventDefault();const button=$('submit');button.disabled=true;setStatus('Đang lưu, commit và push…','info');const skillForm=forms[currentSkill];const field=name=>skillForm.querySelector('[data-session="'+name+'"]');const details=[...skillForm.querySelectorAll('[data-label]')].map(el=>({label:el.dataset.label,value:el.value.trim()})).filter(item=>item.value);try{const result=await request('/api/save',{skill:currentSkill,studyDate:localDate(),source:field('source').value.trim(),lesson:field('lesson').value.trim(),minutes:field('minutes').value,details});setStatus(result.message,'ok');if(result.saved){skillForm.querySelectorAll('[data-label]').forEach(el=>{if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';});field('lesson').value='';field('minutes').value='30';}}catch(error){setStatus(error.message,'err');}finally{button.disabled=false;}}));
 </script></body></html>

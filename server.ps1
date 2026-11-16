@@ -121,6 +121,10 @@ function Handle-Request($Client, $Request) {
         $html = [System.IO.File]::ReadAllBytes($HtmlPath)
         Send-Bytes $Client 200 'OK' 'text/html; charset=utf-8' $html; return
     }
+    if ($Request.Method -eq 'GET' -and $Request.Path -eq '/favicon.svg') {
+        $iconPath = Join-Path $AppDir 'favicon.svg'
+        if (Test-Path -LiteralPath $iconPath) { Send-Bytes $Client 200 'OK' 'image/svg+xml; charset=utf-8' ([System.IO.File]::ReadAllBytes($iconPath)); return }
+    }
     if ($Request.Method -eq 'GET' -and $Request.Path -eq '/api/config') {
         Send-Json $Client 200 (Read-Config); return
     }
