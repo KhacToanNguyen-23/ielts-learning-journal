@@ -2,7 +2,7 @@
 
 Local form for recording IELTS practice. It uses Windows PowerShell/.NET already present on Windows, and your existing Git installation. There is no database, framework, Node/Python/Go runtime, or GitHub token.
 
-The form puts Listening, Reading, Writing, and Speaking in a left sidebar and uses a compact desktop layout designed to fit without page scrolling. Each skill has its own fields. Choose a local clone with the **Chọn repository…** button; no path paste is needed.
+The form puts Listening, Reading, Writing, and Speaking in a left sidebar and uses a compact desktop layout designed to fit without page scrolling. Each skill has its own fields. The **Tìm repo đã clone** button lists Git repositories found in `D:\Project\Personal`, `%USERPROFILE%\source\repos`, and `%USERPROFILE%\Documents\GitHub`. Additional scan roots can be set in `IELTSLOG_REPO_ROOTS` using semicolon-separated paths.
 
 > The repository created for this project is public. Any study logs pushed to it will also be public. Do not include private notes or private recording links.
 
@@ -16,7 +16,7 @@ The form puts Listening, Reading, Writing, and Speaking in a left sidebar and us
    ```
 
    Or double-click `ieltslog.cmd`. It starts the local server and opens `http://127.0.0.1:8765` in your browser. Keep the CMD window open while using the form; press Ctrl+C or close it to stop.
-3. Click **Chọn repository…** and choose the folder of your cloned journal repository. The app remembers it locally.
+3. Click **Tìm repo đã clone**, select your journal repository from the list, and click **Liên kết**. The app remembers it locally.
 4. After studying, select the skill, fill in the prepared fields, and submit. The app appends the entry, creates a Git commit, and runs `git push`.
 
 To run `ieltslog` from any CMD folder, add this app folder to your Windows user `PATH` once. Otherwise, run it from this folder.

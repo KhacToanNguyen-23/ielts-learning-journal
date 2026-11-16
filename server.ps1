@@ -78,6 +78,35 @@ function Read-Config {
     return [pscustomobject]@{ repoPath = '' }
 }
 
+function Get-RepoCandidates {
+    $roots = New-Object 'System.Collections.Generic.List[string]'
+    $roots.Add('D:\Project\Personal')
+    $roots.Add((Join-Path $env:USERPROFILE 'source\repos'))
+    $roots.Add((Join-Path $env:USERPROFILE 'Documents\GitHub'))
+    if ($env:IELTSLOG_REPO_ROOTS) {
+        foreach ($customRoot in ($env:IELTSLOG_REPO_ROOTS -split ';')) {
+            if (-not [string]::IsNullOrWhiteSpace($customRoot)) { $roots.Add($customRoot.Trim()) }
+        }
+    }
+    $found = @{}
+    foreach ($searchRoot in ($roots | Select-Object -Unique)) {
+        if (-not (Test-Path -LiteralPath $searchRoot -PathType Container)) { continue }
+        $candidates = New-Object 'System.Collections.Generic.List[string]'
+        if (Test-Path -LiteralPath (Join-Path $searchRoot '.git')) { $candidates.Add($searchRoot) }
+        foreach ($directory in (Get-ChildItem -LiteralPath $searchRoot -Directory -Force -ErrorAction SilentlyContinue)) {
+            if (Test-Path -LiteralPath (Join-Path $directory.FullName '.git')) { $candidates.Add($directory.FullName) }
+        }
+        foreach ($candidate in $candidates) {
+            $rootOutput = & git -C $candidate rev-parse --show-toplevel 2>$null
+            if ($LASTEXITCODE -eq 0) {
+                $repoPath = [System.IO.Path]::GetFullPath(([string]$rootOutput).Trim())
+                $found[$repoPath] = [pscustomobject]@{ name = (Split-Path -Leaf $repoPath); path = $repoPath }
+            }
+        }
+    }
+    return @($found.Values | Sort-Object name)
+}
+
 function Escape-Md([string]$Text) {
     if ($null -eq $Text) { return '' }
     return ($Text.Trim() -replace '\|', '\|' -replace "`r?`n", '<br>')
@@ -95,36 +124,17 @@ function Handle-Request($Client, $Request) {
     if ($Request.Method -eq 'GET' -and $Request.Path -eq '/api/config') {
         Send-Json $Client 200 (Read-Config); return
     }
-    if ($Request.Method -eq 'GET' -and $Request.Path -eq '/api/version') {
-        Send-Json $Client 200 @{ version = 2 }; return
+    if ($Request.Method -eq 'GET' -and $Request.Path -eq '/api/repos') {
+        Send-Json $Client 200 @{ repositories = @(Get-RepoCandidates) }; return
     }
-    if ($Request.Method -ne 'POST' -or $Request.Path -notin @('/api/config', '/api/pick-repo', '/api/save')) {
+    if ($Request.Method -eq 'GET' -and $Request.Path -eq '/api/version') {
+        Send-Json $Client 200 @{ version = 3 }; return
+    }
+    if ($Request.Method -ne 'POST' -or $Request.Path -notin @('/api/config', '/api/save')) {
         Send-Json $Client 404 @{ error = 'Không tìm thấy đường dẫn.' }; return
     }
     try { $data = $Request.Body | ConvertFrom-Json }
     catch { Send-Json $Client 400 @{ error = 'Dữ liệu form không hợp lệ.' }; return }
-
-    if ($Request.Path -eq '/api/pick-repo') {
-        try {
-            Add-Type -AssemblyName System.Windows.Forms
-            $dialog = New-Object System.Windows.Forms.FolderBrowserDialog
-            $dialog.Description = 'Chọn thư mục Git repository đã clone'
-            $dialog.ShowNewFolderButton = $false
-            $existing = Read-Config
-            if ($existing.repoPath -and (Test-Path -LiteralPath $existing.repoPath -PathType Container)) { $dialog.SelectedPath = [string]$existing.repoPath }
-            try { $choice = $dialog.ShowDialog() }
-            finally { $dialog.Dispose() }
-            if ($choice -ne [System.Windows.Forms.DialogResult]::OK) { Send-Json $Client 200 @{ cancelled = $true }; return }
-            $selectedPath = $dialog.SelectedPath
-            $root = & git -C $selectedPath rev-parse --show-toplevel 2>&1
-            if ($LASTEXITCODE -ne 0) { Send-Json $Client 400 @{ error = 'Thư mục đã chọn không phải Git repository. Hãy chọn thư mục repo đã clone.' }; return }
-            $repoPath = ([string]$root).Trim()
-            New-Item -ItemType Directory -Path $ConfigDir -Force | Out-Null
-            @{ repoPath = $repoPath } | ConvertTo-Json | Set-Content -LiteralPath $ConfigPath -Encoding UTF8
-            Send-Json $Client 200 @{ repoPath = $repoPath; ok = $true }; return
-        }
-        catch { Send-Json $Client 500 @{ error = "Không mở được hộp thoại chọn repo: $($_.Exception.Message)" }; return }
-    }
 
     if ($Request.Path -eq '/api/config') {
         $repoPath = [string]$data.repoPath
