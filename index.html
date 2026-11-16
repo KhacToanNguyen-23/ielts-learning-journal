@@ -118,7 +118,7 @@
     catch(error) { setStatus(error.message,'err'); }
   });
   fetch('/api/config').then(r=>r.json()).then(config=>{if(config.repoPath)$('repoPath').value=config.repoPath;}).catch(()=>{});
-  $('logForm').addEventListener('submit', async event => {
+  document.querySelectorAll('.panel').forEach(formElement => formElement.addEventListener('submit', async event => {
     event.preventDefault();
     if (!$('lesson').reportValidity() || !$('source').reportValidity() || !$('minutes').reportValidity() || !$('studyDate').reportValidity()) return;
     const button=$('submit'); button.disabled=true; setStatus('Đang lưu log, commit và push…','info');
@@ -130,5 +130,5 @@
       if(result.saved) form.querySelectorAll('[data-label]').forEach(el=>{if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';});
     } catch(error) { setStatus(`Chưa ghi được: ${error.message}`,'err'); }
     finally { button.disabled=false; }
-  });
+  }));
 </script></body></html>
